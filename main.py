@@ -6,6 +6,7 @@ from scoreboard import Scoreboard
 
 player = Player()
 car_manager = CarManager()
+scoreboard = Scoreboard()
 
 screen = Screen()
 screen.setup(width=600, height=600)
@@ -16,10 +17,22 @@ screen.listen()
 screen.onkey(player.go_up, "Up")
 screen.onkey(player.go_down, "Down")
 
-# car_manager.random_car()
 
 game_is_on = True
 while game_is_on:
     time.sleep(0.1)
     screen.update()
-    # car_manager.moving_car()
+    car_manager.create_car()
+    car_manager.move_cars()
+    
+    for car in car_manager.all_cars:
+        if car.distance(player) < 20:
+            game_is_on = False
+            scoreboard.game_over()
+    
+    if player.ycor() >= 280:
+        player.restart()
+        scoreboard.add_point()
+        car_manager.level_up()
+            
+screen.exitonclick()
